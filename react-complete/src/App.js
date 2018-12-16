@@ -34,7 +34,7 @@ class App extends Component {
 
     //Kopie des persons-Arrays erstellt:
     const persons= [...this.state.persons];
-    persons[personIndex]= person;
+    persons[personIndex]= person;//hfh
 
 
     this.setState({persons: persons});

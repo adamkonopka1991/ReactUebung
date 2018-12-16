@@ -36,7 +36,8 @@ class App extends Component {
           return <CharComponent
             letter={letter}
             click={() => this.removeLetterHandler(id)}
-            value={this.state.text} />
+            value={this.state.text}
+            key={id} />
         })}
       </div>
     );

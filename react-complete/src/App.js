@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
+import Radium, { StyleRoot } from 'radium'; //StyleRoot für Mediaqueries
 import Person from './Person/Person.js';
+
 
 class App extends Component {
   state= {
@@ -48,15 +50,20 @@ class App extends Component {
   render() {
   
     const style={
-      backgroundColor: 'white',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
-      cursor: 'pointer'
-    };
+      cursor: 'pointer',
+      ':hover':{
+        backgroundColor: 'lightgreen',
+        color: 'black'
+      }
+    };//Achtung: Pseudo-Selektoren können nicht verwendet werden!Deswegen: Radium
 
+    //Persons
     let persons= null;
-
     if(this.state.showPersons) {
       persons=(
         <div>
@@ -70,13 +77,30 @@ class App extends Component {
               changed={(event) => this.nameChangedHandler(event, person.id)} /> //so react does not rerender the whole list due to a change, it rerenders just the changed element
           })/*Umwandlung des persons-Array in ein Array aus JSX-Objekten*/}
         </div>
-      )
+      );
+
+      style.backgroundColor= 'red';
+      style[':hover']= {
+        backgroundColor: 'salmon',
+        color: 'black'
+      };
+    }
+
+
+    //CSS Klassen
+    const classes=[];
+    if(this.state.persons.length<=2){
+      classes.push('red'); //classes will be just red;
+    }
+    if(this.state.persons.length<=1){
+      classes.push('bold'); //classes=['red','bold']
     }
 
     return (
+      <StyleRoot>
       <div className="App">
         <h1>Hi, I'm a React App</h1>
-        <p>This is really working!</p>
+        <p className={classes.join(' ')}>This is really working!</p>
         <button 
         onClick={this.togglePersonsHandler}
         style={style}>Toggle Persons</button> {/*<!-- Function returns a function call;not executed immediately! we pass an anonymus function;*/}
@@ -85,10 +109,11 @@ class App extends Component {
         {persons}
         
       </div>
+      </StyleRoot>
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
 
   }
 }
 
-export default App;
+export default Radium(App);

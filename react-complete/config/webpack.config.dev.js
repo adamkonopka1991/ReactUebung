@@ -283,12 +283,19 @@ module.exports = {
           // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
           // using the extension .module.css
           {
-            test: cssModuleRegex,
+            test: cssRegex,
+            exclude: cssModuleRegex,
             use: getStyleLoaders({
-              importLoaders: 1,
-              modules: true,
-              getLocalIdent: getCSSModuleLocalIdent,
+                importLoaders: 1,
+                modules: true,
+                localIdentName: '[name]__[local]__[hash:base64:5]'
             }),
+            // test: cssModuleRegex,
+            // use: getStyleLoaders({
+            //   importLoaders: 1,
+            //   modules: true,
+            //   getLocalIdent: getCSSModuleLocalIdent,
+            // }),
           },
           // Opt-in support for SASS (using .scss or .sass extensions).
           // Chains the sass-loader with the css-loader and the style-loader

@@ -347,10 +347,17 @@ module.exports = {
           {
             test: cssRegex,
             exclude: cssModuleRegex,
-            loader: getStyleLoaders({
-              importLoaders: 1,
-              sourceMap: shouldUseSourceMap,
+            use: getStyleLoaders({
+                importLoaders: 1,
+                modules: true,
+                localIdentName: '[name]__[local]__[hash:base64:5]'
             }),
+            // test: cssRegex,
+            // exclude: cssModuleRegex,
+            // loader: getStyleLoaders({
+            //   importLoaders: 1,
+            //   sourceMap: shouldUseSourceMap,
+            // }),
             // Don't consider CSS imports dead code even if the
             // containing package claims to have no side effects.
             // Remove this when webpack adds a warning or an error for this.

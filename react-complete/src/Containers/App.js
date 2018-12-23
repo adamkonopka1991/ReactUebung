@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import classes from './App.module.css';
 
-import Person from './Person/Person.js';
-import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
+import Persons from '../Components/Persons/Persons.js';
+import Cockpit from '../Components/Cockpit/Cockpit';
+
 
 
 class App extends Component {
@@ -50,8 +51,7 @@ class App extends Component {
 
   render() {
   
-    //css Klasse für Button
-    let btnClass= "";
+    
     // const rnd= Math.random();
     // if(rnd<0.7)
     // {
@@ -61,49 +61,25 @@ class App extends Component {
 
     //Persons
     let persons= null;
-    if(this.state.showPersons) {
-      persons=(
-        <div>
-
-          {this.state.persons.map((person, index) => {
-            return <ErrorBoundary key={person.id}/* key has to be in the outer Element*/><Person
-              click={() => this.deletePersonHandler(index)}
-              name={person.name}
-              age={person.age} 
-              key={person.id} //notwendig, sodass React effizienter arbeiten kann
-              changed={(event) => this.nameChangedHandler(event, person.id)} /></ErrorBoundary> //so react does not rerender the whole list due to a change, it rerenders just the changed element
-          })/*Umwandlung des persons-Array in ein Array aus JSX-Objekten*/}
-        </div>
-      );
-
-      btnClass= classes.Red;
-      
+    if(this.state.showPersons) 
+    {
+      persons= <Persons 
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangedHandler} />;
     }
 
 
-    //CSS Klassen
-    const assignedClasses=[];
-    if(this.state.persons.length<=2){
-      assignedClasses.push(classes.red); //classes will be just red;
-    }
-    if(this.state.persons.length<=1){
-      assignedClasses.push(classes.bold); //classes=['red','bold']
-    }
+    
 
     return (
       
       <div className={classes.App}>
-        <h1>Hi, I'm a React App</h1>
-        <p className={assignedClasses.join(' ')}>This is really working!</p>
-        <button
-        className={btnClass} 
-        onClick={this.togglePersonsHandler}>Toggle Persons</button> {/*<!-- Function returns a function call;not executed immediately! we pass an anonymus function;*/}
-        
-        
+        <Cockpit 
+          showPersons={this.state.showPersons}
+          persons={this.state.persons}
+          clicked={this.togglePersonsHandler}/>
         {persons}
-
-        <div>{classes.length}sdfsdfsdf</div>
-        
       </div>
       
     );

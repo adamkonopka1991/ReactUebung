@@ -7,15 +7,48 @@ import Cockpit from '../Components/Cockpit/Cockpit';
 
 
 class App extends Component {
-  state= {
-    persons: [
-      {id: 'asdf', name: 'Max', age: 28},
-      {id: 'sss', name: 'Manu', age: 29},
-      {id: 'as', name: 'Stephanie', age: 26}
-    ],
-    showPersons: false
+  constructor(props) {
+    super(props);
+    console.log("[App.js] Inside Constructor", props);
+    this.state= {
+      persons: [
+        {id: 'asdf', name: 'Max', age: 28},
+        {id: 'sss', name: 'Manu', age: 29},
+        {id: 'as', name: 'Stephanie', age: 26}
+      ],
+      showPersons: false
+    }
   }
+
+  componentWillMount()
+  {
+    console.log("[App.js] Inside componentWillMount()");
+  }
+
+  componentDidMount()
+  {
+    console.log("[App.js] Inside componentDidMount()");
+  }
+
+  //Update- Lifecycle Hooks:
+  shouldComponentUpdate(nextProps, nextState)
+  {
+      console.log('[UPDATE App.js] Inside shouldComponentUpdate()', nextProps, nextState);
+      return true;
+  }
+
+  componentWillUpdate(nextProps, nextState)
+  {
+      console.log('[UPDATE App.js] Inside componentWillUpdate', nextProps, nextState);
+  }
+
+  componentDidUpdate()
+  {
+    console.log('[UPDATE App.js] Inside componentDidUpdate'); 
+  }
+
   
+  //deletes a Person of the persons-array
   deletePersonHandler = (personIndex) =>{
       //const persons= this.state.persons.slice();//makes a copy of the given array. Bad practice to manipulate the original array
       const persons= [...this.state.persons];
@@ -23,8 +56,9 @@ class App extends Component {
       this.setState({persons: persons});
   }
 
-  nameChangedHandler = (event,id) => {
-
+  //Changes the name of a person
+  nameChangedHandler = (event,id) => 
+  {
     const personIndex= this.state.persons.findIndex(p => {
       return p.id===id;
     }); //für die Elemente, für die die innere Funktion true zurückgibt liefert this.state.persons.findIndex den Index zurück
@@ -35,32 +69,25 @@ class App extends Component {
     // const person= Object.assign({},this.state.persons[personIndex]);
 
     person.name= event.target.value;
-
     //Kopie des persons-Arrays erstellt:
     const persons= [...this.state.persons];
-    persons[personIndex]= person;//hfh
-
-
+    persons[personIndex]= person;
     this.setState({persons: persons});
   }
 
-  togglePersonsHandler =() => {
+  //changes state of showPersons
+  togglePersonsHandler =() => 
+  {
     const doesShow= this.state.showPersons;
     this.setState({showPersons: !doesShow});
   }
 
   render() {
-  
-    
-    // const rnd= Math.random();
-    // if(rnd<0.7)
-    // {
-    //   throw new Error('Something went wrong');
-    // }
-
-
-    //Persons
+    console.log("[App.js] Inside render()");
+    //Define persons binding to use in return
     let persons= null;
+    
+    //persons will be set if showPersons is true
     if(this.state.showPersons) 
     {
       persons= <Persons 
@@ -69,13 +96,10 @@ class App extends Component {
             changed={this.nameChangedHandler} />;
     }
 
-
-    
-
     return (
-      
       <div className={classes.App}>
         <Cockpit 
+          title={this.props.title}
           showPersons={this.state.showPersons}
           persons={this.state.persons}
           clicked={this.togglePersonsHandler}/>
@@ -84,8 +108,6 @@ class App extends Component {
       
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
-
   }
 }
-
 export default App;

@@ -1,50 +1,53 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Person from './Person/Person';
 
 
-class Persons extends Component{
-      constructor(props) 
-      {
-        super(props);
-        console.log("[Persons.js] Inside Constructor", props);
-      }
-    
-      componentWillMount()
-      {
-        console.log("[Persons.js] Inside componentWillMount()");
-      }
-    
-      componentDidMount()
-      {
-        console.log("[Persons.js] Inside componentDidMount()");
-      }
+class Persons extends PureComponent{
+    constructor(props) 
+    {
+    super(props);
+    console.log("[Persons.js] Inside Constructor", props);
+    }
 
-      //Update Lifecycle Hooks:
+    componentWillMount()
+    {
+    console.log("[Persons.js] Inside componentWillMount()");
+    }
 
-      componentWillReceiveProps(nextProps)
-      {
-          console.log('[UPDATE Persons.js] Inside ComponentWillReceiveProps', nextProps);
+    componentDidMount()
+    {
+    console.log("[Persons.js] Inside componentDidMount()");
+    }
 
-      }
+    //Update Lifecycle Hooks:
 
-      shouldComponentUpdate(nextProps, nextState)
-      {
-          console.log('[UPDATE Persons.js] Inside shouldComponentUpdate()', nextProps, nextState);
-          return nextProps.persons !== this.props.persons; 
-          //Achtung: kein tiefer Vergleich! Nur Vergleich der Referenzen. Da aber hier
-          // vor Update ein neuees Persons-Objekt erstellt wird und mit
-          //setState im State gespeichert wird geht das hier!
-      }
+    componentWillReceiveProps(nextProps)
+    {
+        console.log('[UPDATE Persons.js] Inside ComponentWillReceiveProps', nextProps);
 
-      componentWillUpdate(nextProps, nextState)
-      {
-          console.log('[UPDATE Persons.js] Inside componentWillUpdate', nextProps, nextState);
-      }
+    }
 
-      componentDidUpdate()
-      {
-        console.log('[UPDATE Persons.js] Inside componentDidUpdate'); 
-      }
+    // shouldComponentUpdate(nextProps, nextState)
+    // {
+    //     console.log('[UPDATE Persons.js] Inside shouldComponentUpdate()', nextProps, nextState);
+    //     return nextProps.persons !== this.props.persons ||
+    //         nextProps.changed !== this.props.changed ||
+    //         nextProps.clicked !== this.props.clicked; 
+    //     //Achtung: kein tiefer Vergleich! Nur Vergleich der Referenzen. Da aber hier
+    //     // vor Update ein neuees Persons-Objekt erstellt wird und mit
+    //     //setState im State gespeichert wird geht das hier!
+        
+    // }
+
+    componentWillUpdate(nextProps, nextState)
+    {
+        console.log('[UPDATE Persons.js] Inside componentWillUpdate', nextProps, nextState);
+    }
+
+    componentDidUpdate()
+    {
+    console.log('[UPDATE Persons.js] Inside componentDidUpdate'); 
+    }
       
 
     render()

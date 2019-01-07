@@ -22,7 +22,32 @@ class BurgerBuilder extends Component {
             cheese: 0,
             meat: 0
         },
-        totalPrice: 4
+        totalPrice: 4,
+        purchasable: false
+    }
+
+    updatePurchaseState(newPrice,updatedIngredients) 
+    {
+        const ingredients={
+            ...updatedIngredients
+        };
+
+        
+
+        const sum= Object.keys(ingredients).map(
+            igKey =>{
+                return ingredients[igKey];
+            }).reduce((sum,element)=>{
+            return sum=sum+element;
+        },0);
+
+        console.log(sum);
+
+        this.setState({
+            ingredients: ingredients,
+            totalPrice: newPrice,
+            purchasable: sum>0});
+
     }
 
     addIngredientHandler= (type) => {
@@ -35,33 +60,56 @@ class BurgerBuilder extends Component {
         const priceAddition= INGREDIENT_PRICES[type];
         const oldPrice= this.state.totalPrice;
         const newPrice= oldPrice + priceAddition;
-        this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
+        //this.setState({totalPrice: newPrice, ingredients: updatedIngredients},this.updatePurchaseState);
+        //state does not update immediately,so the call of updatePurchase state might yield a wrong result, because this.setState({purchasable: sum>0});
+        //might not yield true. Using updatePurchaseState as the second argument guarantees that its called after the state was updated in
+        //addIngredient Handler
+        
+        this.updatePurchaseState(newPrice,updatedIngredients);//setState will be called inUpdatePurchase state because of the reason seen above
     }
 
     removeIngredientHandler= (type) => {
         const oldCount= this.state.ingredients[type];
-        if(oldCount>0)
-        { 
-            const updatedCount= oldCount - 1;
-            const updatedIngredients= {
-                ...this.state.ingredients
-            };
-            updatedIngredients[type]= updatedCount;
-            const priceSubtraction= INGREDIENT_PRICES[type];
-            const oldPrice= this.state.totalPrice;
-            const newPrice= oldPrice - priceSubtraction;
-            this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
-
+        if(oldCount<= 0)
+        {
+            return;
         }
+        const updatedCount= oldCount - 1;
+        const updatedIngredients= {
+            ...this.state.ingredients
+        };
+        updatedIngredients[type]= updatedCount;
+        const priceSubtraction= INGREDIENT_PRICES[type];
+        const oldPrice= this.state.totalPrice;
+        const newPrice= oldPrice - priceSubtraction;
+        this.updatePurchaseState(newPrice,updatedIngredients);
+        
+
+        
         
     }
 
     render(){
+
+        //Check if Less-Butten should be disabled or enabled
+        //ie Array of the size of the ingredient array, whereas for each element true or false is assigned 
+        const disabledInfo= {
+            ...this.state.ingredients
+        };
+        for(let key in disabledInfo) //achtung: hier wird in key (generelle bei der for-in Schleife)der Schlüssel eines Elements gespeichert!
+        {
+            disabledInfo[key]= disabledInfo[key]<=0;
+        }
+
         return (
             <Aux>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls
-                    ingredientAdded={this.addIngredientHandler} />
+                    ingredientAdded={this.addIngredientHandler} 
+                    ingredientRemoved={this.removeIngredientHandler}
+                    disabled={disabledInfo}
+                    purchasable={this.state.purchasable}
+                    price={this.state.totalPrice}/>
             </Aux>
         );
     }

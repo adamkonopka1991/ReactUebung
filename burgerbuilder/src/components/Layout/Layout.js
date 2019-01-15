@@ -4,7 +4,7 @@ import Aux from '../../hoc/auxiliary';
 import classes from './Layout.module.css';
 import Toolbar from '../Navigation/Toolbar/Toolbar';
 import SideDrawer from '../Navigation/SideDrawer/SideDrawer';
-
+//is actually further a hoc!! so, in future i put the layout component in hoc, especially  when routing is included and layout wraps more than one component.
 class Layout extends Component{
 
     state= {

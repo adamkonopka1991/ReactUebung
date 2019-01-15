@@ -117,8 +117,8 @@ class BurgerBuilder extends Component {
 
         return (
             <Aux>
-            
-                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                {/*wird nur rerendert wenn show sich ändert */}
+                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>{/*wenn nicht gezeigt muss das Modal auch nicht rerendered werden*/}
                     <OrderSummary 
                         ingredients={this.state.ingredients}
                         price={this.state.totalPrice}

@@ -9,7 +9,7 @@ class Modal extends Component
     //Can we change the way the children of Modal are updating the way modal itself updates? 
     //-> wrapping element controls the updating of the wrapped element(here:modal controls OrderSummary)
     shouldComponentUpdate(nextProps, nextState){
-        return nextProps.show!==this.props.show;
+        return nextProps.show!==this.props.show || nextProps.children !== this.props.children;
         //wird nur geupdated wenn sich der show-Zustand von Modal ändert
         //Logisch: Man kann den zustand nicht ändern während modal geöffnet ist,- man muss das modal schließen
         //wenn das modal geöffnet wird, wird wiederum ein rerender getriggert und der Kunde sieht den aktuellen Zustand

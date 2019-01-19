@@ -5,6 +5,9 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OderSummary';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import axios from '../../axios-orders';
 
 //Preise für Zutaten:
 const INGREDIENT_PRICES={
@@ -26,7 +29,8 @@ class BurgerBuilder extends Component {
         },
         totalPrice: 4,
         purchasable: false,
-        purchasing: false //true, as soon as Order Now - Button was clicked
+        purchasing: false, //true, as soon as Order Now - Button was clicked
+        loading: false
     }
 
     updatePurchaseState(newPrice,updatedIngredients) 
@@ -95,18 +99,41 @@ class BurgerBuilder extends Component {
 
     purchaseCancelHandler = () =>
     {
-        this.setState({purchasing: false});
+        this.setState({purchasing:  false});
     }
 
     purchaseContinueHandler= () =>
     {
-        alert("You continue!");
+        //alert("You continue!");a
+        this.setState({loading: true})
+        const order= {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice, //calculate your price in the backend to make surethat the user isnt manipulating the code!!!
+            customer:{
+                name: 'Adam Konopka',
+                address: {
+                    street: 'Teststreet 1',
+                    zipCode: '34234',
+                    country: 'Germany'
+                },
+                email: 'test@test.com'
+            },
+            deliveryMethod: 'fastest'
+        }
+
+        axios.post('/orders.json', order)
+            .then(response =>{
+                this.setState({loading: false, purchasing: false});
+            })
+            .catch(error => {
+                this.setState({loading: false, purchasing: false});
+            });
     }
 
     render(){
 
         //Check if Less-Butten should be disabled or enabled
-        //ie Array of the size of the ingredient array, whereas for each element true or false is assigned 
+        //ie Array of the size of the ingredient array, whereas for each element true or , purchasing: false is assigned 
         const disabledInfo= {
             ...this.state.ingredients
         };
@@ -115,15 +142,24 @@ class BurgerBuilder extends Component {
             disabledInfo[key]= disabledInfo[key]<=0;
         }
 
+
+        let orderSummary= <OrderSummary 
+        ingredients={this.state.ingredients}
+        price={this.state.totalPrice}
+        purchaseCancelled={this.purchaseCancelHandler}
+        purchaseContinued={this.purchaseContinueHandler} />;
+
+        if(this.state.loading)
+        {
+            orderSummary= <Spinner />
+        }
+
+
         return (
             <Aux>
                 {/*wird nur rerendert wenn show sich ändert */}
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>{/*wenn nicht gezeigt muss das Modal auch nicht rerendered werden*/}
-                    <OrderSummary 
-                        ingredients={this.state.ingredients}
-                        price={this.state.totalPrice}
-                        purchaseCancelled={this.purchaseCancelHandler}
-                        purchaseContinued={this.purchaseContinueHandler} />
+                    {orderSummary}
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls
@@ -138,4 +174,4 @@ class BurgerBuilder extends Component {
     }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder);

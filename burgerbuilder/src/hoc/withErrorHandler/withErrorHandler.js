@@ -11,16 +11,22 @@ const withErrorHandler= (WrappedComponent,axios) =>
             error: null
         }
 
-        componentDidMount () {
-            axios.interceptors.request.use(req=>{
-                this.setState({error:null});
+        componentWillMount () { //not in didmount but in willmount cause we reach out to the web in childcomponent. Interceptors wouldnt then be set up in case interceptors are set in did mount of the wrapping component.
+            this.reqInterceptor= axios.interceptors.request.use(req=>{
+                this.setState({error:null}); //?Fehler wird bei Anfrage immer gelöscht, sodass nur bei der Antwort der Fehler auftauchen kann
+                return req;
             })
-            axios.interceptors.response.use(null, error=>{
-                this.setState({error: error});
+            this.resInterceptor= axios.interceptors.response.use(res => res, error=>{
+                this.setState({error: error}); //?Fehler komm nur bei Antwort
             });
         }
 
-        errorConfirmedHandler()
+        componentWillUnmount() {
+            axios.interceptors.request.eject(this.reqInterceptor);
+            axios.interceptors.request.eject(this.resInterceptor);
+        }//?otherwise multiple interceptors will be in memory and called every time we reach out to the web.especially important when it comes to routing
+
+        errorConfirmedHandler= () =>
         {
             this.setState({error:null});
         }
@@ -30,8 +36,8 @@ const withErrorHandler= (WrappedComponent,axios) =>
                 <Aux>
                     <Modal 
                         show={this.state.error}
-                        clicked={thisErrorConfirmedHandler}>
-                        {this.state.error.message}
+                        modalClosed={this.errorConfirmedHandler}>
+                        {this.state.error ? this.state.error.message : null} {/*modal ist immer präsent. error ist aber nicht immer gesetzt-> null hat keine properties.*/}
                     </Modal>
                     <WrappedComponent {...this.props} />
                 </Aux>

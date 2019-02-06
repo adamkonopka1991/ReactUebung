@@ -3,17 +3,21 @@ import { BrowserRouter, Route, NavLink } from 'react-router-dom';
 
 import Courses from './containers/Courses/Courses';
 import Users from './containers/Users/Users';
+import Course from './containers/Course/Course';
 import classes from './App.module.css';
 
 class App extends Component {
+  
   render () {
+    console.log(classes);
     return (
       <BrowserRouter>
       <div className={classes.App}>
         <nav>
           <ul>
-            <li><NavLink to="/courses">Courses</NavLink></li>
-            <li><NavLink to="/users">Users</NavLink></li>
+            
+            <li><NavLink to="/courses" activeClassName={classes.active}>Courses</NavLink></li>
+            <li><NavLink to="/users" activeClassName={classes.active}>Users</NavLink></li>
           </ul>
         </nav>
         <div >
@@ -30,6 +34,7 @@ class App extends Component {
         </div>
         <Route path="/courses" component={Courses} />
         <Route path="/users" component={Users} />
+        <Route path='/course/:id' exact component={Course} />
       </div>
       </BrowserRouter>
     );

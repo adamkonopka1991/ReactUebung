@@ -1,7 +1,5 @@
-.App{
-    background-color: grey;
-}
 
-.App .active{
+
+.active {
     color: green;
 }

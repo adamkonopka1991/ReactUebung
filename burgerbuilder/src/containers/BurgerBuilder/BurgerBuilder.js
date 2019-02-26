@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {Route} from 'react-router-dom';
 
 import Aux from '../../hoc/auxiliary';
 import Burger from '../../components/Burger/Burger';
@@ -9,7 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios-orders';
-import Checkout from '../Checkout/Checkout';
+
 
 //Preise für Zutaten:
 const INGREDIENT_PRICES={
@@ -113,34 +112,21 @@ class BurgerBuilder extends Component {
 
     purchaseContinueHandler= () =>
     {
-        //alert("You continue!");a
-        // this.setState({loading: true})
-        // const order= {
-        //     ingredients: this.state.ingredients,
-        //     price: this.state.totalPrice, //calculate your price in the backend to make surethat the user isnt manipulating the code!!!
-        //     customer:{
-        //         name: 'Adam Konopka',
-        //         address: {
-        //             street: 'Teststreet 1',
-        //             zipCode: '34234',
-        //             country: 'Germany'
-        //         },
-        //         email: 'test@test.com'
-        //     },
-        //     deliveryMethod: 'fastest'
-        // }
-
-        // axios.post('/orders.json', order)
-        //     .then(response =>{
-        //         this.setState({loading: false, purchasing: false});
-        //     })
-        //     .catch(error => {
-        //         this.setState({loading: false, purchasing: false});
-        //     });
+        
 
         //go to /checkout
+        const queryParams= [];
+        for(let i in this.state.ingredients)
+        {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
+        }
+        queryParams.push('price=' + this.state.totalPrice);
+        const queryString= queryParams.join('&');
+
         console.log("Das Objekt lautet: ",this.props.history);
-        this.props.history.push({pathname:'/checkout'});
+        this.props.history.push({
+            pathname:'/checkout',
+            search: '?' + queryString});
     }
 
     render(){
